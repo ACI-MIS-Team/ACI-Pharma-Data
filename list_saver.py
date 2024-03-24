@@ -1,7 +1,7 @@
 
 import os
 import time
-import wavio, json, random, torch
+import wavio, json, random #, torch
 import numpy as np
 import sounddevice as sd
 
@@ -77,12 +77,13 @@ def create_randomized_word(json_data_path = 'data_gen_list.json', middle_part_pr
     final_part = random.choice(data['final_part']).strip()
     pack_size = random.choice(data['pack_size']).strip()
     
-    if torch.rand((1)) >= middle_part_prob:
-        single_product_name = f'{first_part} {middle_part} {final_part}'
+    if np.random.rand(1) >= middle_part_prob:
+        single_product_name = f'{first_part.strip()} {middle_part.strip()} {final_part.strip()}'
+
     else:
         single_product_name = f'{first_part} {final_part}'
     
-    if torch.rand((1)) >= packsize_prob:
+    if np.random.rand(1) >= packsize_prob:
         single_product_name = f'{single_product_name} {pack_size}'
     
     return single_product_name[1:] if single_product_name.startswith(' ') else single_product_name
