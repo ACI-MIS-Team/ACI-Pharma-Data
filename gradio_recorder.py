@@ -41,6 +41,7 @@ import os
 def create_folder_and_offer_product_name(recorder_name):
     # Sanitize the input text to avoid issues with folder names.
     folder_name = "".join(x for x in recorder_name if x.isalnum() or x in " _-")
+    folder_name = folder_name.lower()
     try:
         # Create the folder if it doesn't already exist.
         os.makedirs(folder_name, exist_ok=True)
@@ -53,11 +54,13 @@ def create_folder_and_offer_product_name(recorder_name):
 
     # This function now also attempts to create a folder based on the input text.
     # Customize further as needed.
-    return product_name, audio_recorder
+    recordCount = len(os.listdir(folder_name))
+    return product_name, audio_recorder, recordCount
 
 def save_audio_and_offer_product_name(recorder_name, product_name, recorded_aud_path):
     # Sanitize the input text to avoid issues with folder names.
     folder_name = "".join(x for x in recorder_name if x.isalnum() or x in " _-")
+    folder_name = folder_name.lower()
     try:
         # Create the folder if it doesn't already exist.
         os.makedirs(folder_name, exist_ok=True)
@@ -73,28 +76,32 @@ def save_audio_and_offer_product_name(recorder_name, product_name, recorded_aud_
 
     # This function now also attempts to create a folder based on the input text.
     # Customize further as needed.
-    return product_name, audio_recorder
+    recordCount = len(os.listdir(folder_name))
+    return product_name, audio_recorder, recordCount
 
 with gr.Blocks() as app:
     gr.HTML("""
         <h2 style="color: green; text-align: center;">Product Data Collector</h2>
     """)
     with gr.Row():
-        text_input = gr.Textbox(label="Who is recording? Enter you Name.")
+        text_input = gr.Textbox(label="Who is recording? Enter you Name and press [ENTER].")
     with gr.Column(variant="panel"):
         with gr.Row():
             output_text = gr.Textbox(label="Product Name to Read", interactive=False)
             audio_recorder = gr.Microphone(label="Record Here", type="filepath", interactive=True)
         with gr.Row():
             submit_button = gr.Button("Submit")
+        with gr.Row():
+            recordCount = gr.Textbox(label=f"Total data done by you", interactive=False)
     
     text_input.submit(create_folder_and_offer_product_name, 
                       text_input, 
-                      outputs=[output_text, audio_recorder])
+                      outputs=[output_text, audio_recorder, recordCount])
     # audio_recorder.stop_recording(lambda : gr.Button("Submit", interactive=True), None, submit_button)
     submit_button.click(save_audio_and_offer_product_name, 
                         inputs=[text_input, output_text, audio_recorder], 
-                        outputs=[output_text, audio_recorder])
+                        outputs=[output_text, audio_recorder, recordCount])
+
 
 # To run the app, use the following command in your Python environment:
 app.queue()
