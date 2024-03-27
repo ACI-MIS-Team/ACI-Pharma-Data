@@ -76,7 +76,7 @@ def save_audio_and_offer_product_name(recorder_name, product_name, recorded_aud_
 
     # This function now also attempts to create a folder based on the input text.
     # Customize further as needed.
-    recordCount = len(os.listdir(folder_name))
+    recordCount = f'Total audio done by {folder_name}: {len(os.listdir(folder_name))}'
     return product_name, audio_recorder, recordCount
 
 with gr.Blocks() as app:
@@ -92,7 +92,7 @@ with gr.Blocks() as app:
         with gr.Row():
             submit_button = gr.Button("Submit")
         with gr.Row():
-            recordCount = gr.Textbox(label=f"Total data done by you", interactive=False)
+            recordCount = gr.Textbox(label=f"Counter", interactive=False)
     
     text_input.submit(create_folder_and_offer_product_name, 
                       text_input, 
